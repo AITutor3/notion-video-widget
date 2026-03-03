@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notion Video Widget</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      width: 100%; height: 100vh; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .video-container {
+      position: relative; max-width: 800px; width: 90%; aspect-ratio: 16/9;
+      border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    video {
+      width: 100%; height: 100%; object-fit: cover;
+      /* 컨트롤러 완전 숨김 + 다운로드 방지 */
+      pointer-events: none;
+    }
+    /* 커스텀 컨트롤 버튼 */
+    .custom-controls {
+      position: absolute; bottom: 20px; left: 50%;
+      transform: translateX(-50%); background: rgba(0,0,0,0.7);
+      padding: 10px 20px; border-radius: 50px; backdrop-filter: blur(10px);
+      display: flex; gap: 10px;
+    }
+    .play-btn, .pause-btn {
+      background: #ff6b6b; color: white; border: none;
+      width: 50px; height: 50px; border-radius: 50%; 
+      font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .play-btn:hover, .pause-btn:hover { background: #ff5252; transform: scale(1.1); }
+  </style>
+</head>
+<body>
+  <div class="video-container">
+    <!-- 보호된 영상 URL 넣기 (Vimeo/YouTube 권장) -->
+    <!-- 기본 테스트용 공개 영상 링크를 삽입해 두었습니다. -->
+    <video id="myVideo" muted loop playsinline>
+      <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+      브라우저에서 지원되지 않습니다.
+    </video>
+    <div class="custom-controls">
+      <button class="play-btn" onclick="playVideo()">▶</button>
+      <button class="pause-btn" onclick="pauseVideo()">⏸</button>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('myVideo');
+    // 브라우저 정책상 자동재생 시 muted 필수
+    video.play().catch(e => console.log("자동재생이 차단되었습니다.", e));
+
+    function playVideo() { video.play(); }
+    function pauseVideo() { video.pause(); }
+
+    // 모바일 터치 또는 클릭 지원을 위해 컨테이너 클릭 이벤트 추가
+    const container = document.querySelector('.video-container');
+    container.addEventListener('click', (e) => {
+      // 버튼 클릭 시에는 이 이벤트가 작동하지 않도록 예외처리
+      if (e.target.tagName === 'BUTTON') return;
+      video.paused ? video.play() : video.pause();
+    });
+  </script>
+</body>
+</html>
